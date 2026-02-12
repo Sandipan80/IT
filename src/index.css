@@ -1,1 +1,12 @@
 @import "tailwindcss";
+.custom-sidebar-menu .ant-menu-item {
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+  height: 48px !important;
+  line-height: 48px !important;
+}
+
+.custom-sidebar-menu .ant-menu-item-selected {
+  background-color: #eff6ff !important; /* blue-50 */
+  color: #2563eb !important; /* blue-600 */
+}
