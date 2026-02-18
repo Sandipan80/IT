@@ -6,6 +6,9 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   AppstoreOutlined,
+  TagOutlined,
+  SnippetsOutlined,
+  CustomerServiceOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
@@ -16,8 +19,8 @@ const Sidebar = () => {
     { 
       key: '1', 
       icon: <DashboardOutlined className="text-lg" />, 
-      label: <span className="font-medium">Dashboard</span> 
-    },
+      label: <Link to="/" className="font-medium">Dashboard</Link>  
+    }, 
     { 
       key: '2', 
       icon: <AppstoreOutlined className="text-lg" />, 
@@ -27,6 +30,21 @@ const Sidebar = () => {
       key: '3', 
       icon: <UserOutlined className="text-lg" />, 
       label: <Link to="/Employee" className="font-medium">Employee Directory</Link>
+    },
+    { 
+      key: '4', 
+      icon: <AppstoreOutlined className="text-lg" />, 
+      label: <Link to="/AssetInventory" className="font-medium">Asset Inventory</Link>
+    },
+    { 
+      key: '5', 
+      icon: <SnippetsOutlined className="text-lg" />, 
+      label: <Link to="/TicketQueue" className="font-medium">Ticket Queue</Link>
+    },
+    { 
+      key: '6', 
+      icon: <TagOutlined className="text-lg" />, 
+      label: <Link to="/MyAsset" className="font-medium">My Asset</Link>
     },
   ];
 

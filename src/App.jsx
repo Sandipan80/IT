@@ -6,6 +6,9 @@ import Sidebar from './components/Layout/Sidebar'
 import UserDirectory from './components/User'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Users from './components/Employee'
+import AssetInventory from './components/AssetInventory'
+import TicketQueue from './components/TicketQueue'
+import MyAsset from './components/MyAsset'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -22,6 +25,9 @@ function App() {
             {/* When path is /users, render the UserDirectory component */}
             <Route path="/users" element={<UserDirectory />} />
             <Route path="/Employee" element={<Users />} />
+            <Route path="/AssetInventory" element={<AssetInventory />} />
+            <Route path="/TicketQueue" element={<TicketQueue />} />
+            <Route path="/MyAsset" element={<MyAsset />} />
 
             {/* Default Landing Page (Dashboard) */}
             <Route path="/" element={
