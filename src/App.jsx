@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate,useNavigate } from 'react-router-dom';
 import Sidebar from './components/Layout/Sidebar';
 import UserDirectory from './components/User';
 import Users from './components/Employee';
@@ -6,7 +6,46 @@ import AssetInventory from './components/AssetInventory';
 import TicketQueue from './components/TicketQueue';
 import MyAsset from './components/MyAsset';
 import LoginPage from './components/Login';
-import ProtectedRoute from './components/Routes/ProtectedRoute'; // Import the gatekeeper
+import ProtectedRoute from './components/Routes/ProtectedRoute'; 
+import { useEffect } from 'react';
+
+
+
+
+const AuthListener = () => {
+  const navigate = useNavigate();
+  // We use state to force a re-render when the token changes
+  const [internalToken, setInternalToken] = useState(localStorage.getItem("token"));
+
+  useEffect(() => {
+    const syncToken = () => {
+      const currentToken = localStorage.getItem("token");
+      
+      // If token was deleted manually
+      if (!currentToken && window.location.pathname !== '/Login') {
+        setInternalToken(null);
+        navigate('/Login', { replace: true });
+      } 
+      // If a token was added (e.g., in another tab)
+      else if (currentToken !== internalToken) {
+        setInternalToken(currentToken);
+      }
+    };
+
+    // 1. Listen for storage changes in other tabs
+    window.addEventListener('storage', syncToken);
+    
+    // 2. Poll every 500ms for high-speed detection in the same tab's DevTools
+    const interval = setInterval(syncToken, 500);
+
+    return () => {
+      window.removeEventListener('storage', syncToken);
+      clearInterval(interval);
+    };
+  }, [navigate, internalToken]);
+
+  return null;
+};
 
 function App() {
   return (
