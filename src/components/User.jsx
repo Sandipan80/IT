@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Card, message } from 'antd'; // Added message for better feedback
 import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 
 const MyForm = () => {
   // 1. Initialize the form instance
@@ -8,7 +9,7 @@ const MyForm = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/Assets/newasset', values);
+      const response = await axiosInstance.post('/Assets/newasset', values);
       console.log('Success:', response.data);
       
       if (response.data.token) {

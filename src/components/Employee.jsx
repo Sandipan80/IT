@@ -1,5 +1,6 @@
 import axios from "axios";
 import React,{useState,useEffect} from "react";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Users=()=>{
     const [data, setData]= useState();
@@ -21,7 +22,6 @@ const Users=()=>{
     ,[])
 
     const [searchTerm, setSearchTerm] = useState('');
-
 // Filter the employeeList based on Name or Department
 const filteredEmployees = data?.employeeList.filter((emp) =>
   emp.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
