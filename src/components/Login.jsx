@@ -14,6 +14,8 @@ const LoginPage = () => {
       
       // Save the token for protected routes
       localStorage.setItem("token", response.data.token);
+      // Example in your Login UI logic
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       
       message.success("Login Successful!");
       window.location.href = "/"; 

@@ -7,6 +7,7 @@ import TicketQueue from './components/TicketQueue';
 import MyAsset from './components/MyAsset';
 import LoginPage from './components/Login';
 import ProtectedRoute from './components/Routes/ProtectedRoute'; 
+import Profile from './components/Pages/Profile';
 import { useEffect } from 'react';
 
 
@@ -68,6 +69,7 @@ function App() {
                     <Route path="/AssetInventory" element={<AssetInventory />} />
                     <Route path="/TicketQueue" element={<TicketQueue />} />
                     <Route path="/MyAsset" element={<MyAsset />} />
+                    <Route path="/Profile/:id" element={<Profile />} />
                     
                     {/* Default Landing Page (Dashboard) */}
                     <Route path="/" element={
