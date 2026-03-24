@@ -9,7 +9,7 @@ const MyForm = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axiosInstance.post('/Assets/newasset', values);
+      const response = await axios.post("http://localhost:5000/api/Assets/newasset", values);
       console.log('Success:', response.data);
       
       if (response.data.token) {

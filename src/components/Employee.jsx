@@ -1,6 +1,8 @@
 import axios from "axios";
 import React,{useState,useEffect} from "react";
 import axiosInstance from "../../utils/axiosInstance";
+import MyForm from "./User";
+import { createPortal } from 'react-dom';
 
 const Users=()=>{
     const [data, setData]= useState();
@@ -27,6 +29,7 @@ const filteredEmployees = data?.employeeList.filter((emp) =>
   emp.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
   emp.Department?.toLowerCase().includes(searchTerm.toLowerCase())
 ) || [];
+const [showForm, setShowForm] = useState(false);
     return (
   <div className="p-6 bg-slate-50 min-h-screen">
     <div className="max-w-7xl mx-auto space-y-6">
@@ -37,6 +40,7 @@ const filteredEmployees = data?.employeeList.filter((emp) =>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Employee Asset Directory</h1>
           <p className="text-slate-500 text-sm">{data?.message || 'Manage your organizational resources'}</p>
         </div>
+        
 
         <div className="relative w-full md:w-72">
           <input
@@ -51,6 +55,49 @@ const filteredEmployees = data?.employeeList.filter((emp) =>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </span>
+        </div>
+        <div  className="  text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition hover:-translate-y-1 active:scale-95">
+          <button 
+        onClick={() => setShowForm(true)} 
+        className="bg-blue-500  text-white px-6 py-3 rounded-full transition-transform active:scale-95"
+      >
+        Add Employee
+      </button>
+
+      {/* 3. Conditional Rendering: Only show form if showForm is true */}
+
+{showForm && createPortal(
+  <div 
+    className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-8"
+    onClick={() => setShowForm(false)}
+  >
+    {/* The Modal Card */}
+    <div 
+      className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+      onClick={(e) => e.stopPropagation()} // Prevents closing when clicking form
+    >
+      
+      {/* Header with Close Button */}
+      <div className="flex items-center justify-between p-6 border-b">
+        <h2 className="text-xl font-bold text-gray-800">Add New Employee</h2>
+        <button 
+          onClick={() => setShowForm(false)}
+          className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      {/* Scrollable Form Body */}
+      <div className="p-6 overflow-y-auto">
+        <MyForm />
+      </div>
+
+    </div>
+  </div>,
+  document.body // This sends the HTML to the end of the body tag
+)}
+
         </div>
       </div>
 

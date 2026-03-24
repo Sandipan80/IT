@@ -8,7 +8,9 @@ import MyAsset from './components/MyAsset';
 import LoginPage from './components/Login';
 import ProtectedRoute from './components/Routes/ProtectedRoute'; 
 import Profile from './components/Pages/Profile';
+import Upload from './components/Pages/Upload';
 import { useEffect } from 'react';
+import Upload2 from './components/Pages/Upload';
 
 
 
@@ -70,6 +72,8 @@ function App() {
                     <Route path="/TicketQueue" element={<TicketQueue />} />
                     <Route path="/MyAsset" element={<MyAsset />} />
                     <Route path="/Profile/:id" element={<Profile />} />
+                    <Route path="/Upload2" element={<Upload2 />} />
+
                     
                     {/* Default Landing Page (Dashboard) */}
                     <Route path="/" element={
