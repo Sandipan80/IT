@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate,useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './components/Layout/Sidebar';
 import UserDirectory from './components/User';
 import Users from './components/Employee';
@@ -11,6 +12,13 @@ import Profile from './components/Pages/Profile';
 import Upload from './components/Pages/Upload';
 import { useEffect } from 'react';
 import Upload2 from './components/Pages/Upload';
+import Navbar from './components/Layout/Navbar';
+import Dashboard from './components/Pages/Dashboard';
+import Home from './publicPages/Home';
+import About from './PublicPages/About';
+import Contact from './PublicPages/Contact';
+import ProductA from './PublicPages/Product/ProductA';
+import ProductB from './PublicPages/Product/ProductB';
 
 
 
@@ -54,8 +62,19 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* PUBLIC ROUTE: Login is accessible to everyone */}
-        <Route path="/Login" element={<LoginPage />} />
+        {/* PUBLIC ROUTE:  */}
+        {/* <Route path="/Login" element={<LoginPage />} />
+        <Route path="/Navbar" element={<Navbar />} />
+        <Route path="/" element={<Home />} /> */}
+        <Route element={<><Navbar /><div className="pt-20"><Outlet /></div></>}>
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/ContactUs" element={<Contact />} />
+          <Route path="/Product/A" element={<ProductA />} />
+          <Route path="/Product/B" element={<ProductB />} />
+          {/* Add Products, Careers, etc., here if you make them */}
+        </Route>
 
         {/* PROTECTED ROUTES: Only accessible if token exists */}
         <Route
@@ -73,10 +92,11 @@ function App() {
                     <Route path="/MyAsset" element={<MyAsset />} />
                     <Route path="/Profile/:id" element={<Profile />} />
                     <Route path="/Upload2" element={<Upload2 />} />
+                    <Route path="/Dashboard" element={<Dashboard />} />
 
                     
                     {/* Default Landing Page (Dashboard) */}
-                    <Route path="/" element={
+                    {/* <Route path="/" element={
                       <>
                         <header className="mb-6">
                           <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -85,7 +105,7 @@ function App() {
                            Welcome! Select a menu item from the sidebar to begin.
                         </div>
                       </>
-                    } />
+                    } /> */}
                     
                     {/* Catch-all: Redirect unknown paths to dashboard */}
                     <Route path="*" element={<Navigate to="/" />} />

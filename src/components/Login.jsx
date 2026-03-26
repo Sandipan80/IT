@@ -18,7 +18,7 @@ const LoginPage = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       
       message.success("Login Successful!");
-      window.location.href = "/"; 
+      window.location.href = "/Dashboard"; 
     } catch (err) {
       // Displays the specific error from your Express backend or a fallback message
       const errorMsg = err.response?.data?.message || "Login Failed. Please check your credentials.";

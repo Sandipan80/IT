@@ -20,7 +20,7 @@ const Sidebar = () => {
     { 
       key: '1', 
       icon: <DashboardOutlined className="text-lg" />, 
-      label: <Link to="/" className="font-medium">Dashboard</Link>  
+      label: <Link to="/Dashboard" className="font-medium">Dashboard</Link>  
     }, 
     { 
       key: '2', 
