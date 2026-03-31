@@ -19,6 +19,7 @@ import About from './PublicPages/About';
 import Contact from './PublicPages/Contact';
 import ProductA from './PublicPages/Product/ProductA';
 import ProductB from './PublicPages/Product/ProductB';
+import Test from './PublicPages/Test'
 
 
 
@@ -73,6 +74,7 @@ function App() {
           <Route path="/ContactUs" element={<Contact />} />
           <Route path="/Product/A" element={<ProductA />} />
           <Route path="/Product/B" element={<ProductB />} />
+          <Route path="/Test" element={<Test />} />
           {/* Add Products, Careers, etc., here if you make them */}
         </Route>
 

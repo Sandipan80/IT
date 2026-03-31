@@ -6,16 +6,22 @@ import {
   MenuOutlined, 
   CloseOutlined 
 } from '@ant-design/icons';
+import logo from '../../assets/Logo.png'
 
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2 group shrink-0">
     <div className="transition-transform duration-300 group-hover:rotate-12">
-      <svg width="28" height="28" viewBox="0 0 100 100" className="text-blue-600 fill-current w-6 h-6 md:w-8 md:h-8">
+      {/* <svg Link="">
         <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" />
-      </svg>
+      </svg> */}
+      <img 
+      src={logo} 
+      alt="Vault Logo"
+      style={{height:'40px',width:'auto'}}
+       />
     </div>
     <span className="font-bold text-lg md:text-xl tracking-tight text-gray-900">
-      Solidroad
+      Vault
     </span>
   </Link>
 );

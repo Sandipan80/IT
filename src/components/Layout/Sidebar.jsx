@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/Logo.png'
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -63,8 +64,12 @@ const Sidebar = () => {
             {/* <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
               <span className="text-white font-bold text-xs">MA</span>
             </div> */}
+            <img 
+            src={logo} 
+            alt=""
+            style={{height:'40px' ,width:'auto' }} />
             <span className="text-lg font-bold bg-linear-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent tracking-tight">
-            Asset & Helpdesk            
+            Vault            
             </span>
           </div>
         )}
