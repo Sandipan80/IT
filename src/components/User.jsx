@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, Form, Input, Card, message } from 'antd'; // Added message for better feedback
-import axios from 'axios';
-import axiosInstance from '../../utils/axiosInstance';
+import React from "react";
+import { Button, Form, Input, Card, message, Radio } from "antd";
+import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 const MyForm = () => {
   // 1. Initialize the form instance
@@ -9,27 +9,32 @@ const MyForm = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/Assets/newasset", values);
-      console.log('Success:', response.data);
-      
+      const response = await axios.post(
+        "http://localhost:5000/api/EmployeeRoute/NewUser",
+        values,
+      );
+      console.log("Success:", response.data);
+
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("token", response.data.token);
       }
-      
+
       // 2. Success Feedback
-      message.success('Employee Registered Successfully!');
-      
+      message.success("Employee Registered Successfully!");
+
       // 3. Reset the form fields to their initial values
       form.resetFields();
-
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-      message.error('Registration Failed: ' + (error.response?.data?.message || 'Server Error'));
+      console.error("Error:", error.response?.data || error.message);
+      message.error(
+        "Registration Failed: " +
+          (error.response?.data?.message || "Server Error"),
+      );
     }
   };
 
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -56,61 +61,128 @@ const MyForm = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
               <Form.Item
-                label={<span className="font-semibold text-slate-700">Full Name</span>}
+                label={
+                  <span className="font-semibold text-slate-700">
+                    Full Name
+                  </span>
+                }
                 name="Name"
-                rules={[{ required: true, message: 'Please input Employee Name!' }]}
+                rules={[
+                  { required: true, message: "Please input Employee Name!" },
+                ]}
               >
-                <Input className="rounded-lg py-2 hover:border-blue-400 focus:border-blue-500 transition-all" placeholder="John Doe" />
+                <Input
+                  className="rounded-lg py-2 hover:border-blue-400 focus:border-blue-500 transition-all"
+                  placeholder="John Doe"
+                />
               </Form.Item>
 
               <Form.Item
-                label={<span className="font-semibold text-slate-700">Employee Code</span>}
+                label={
+                  <span className="font-semibold text-slate-700">
+                    Employee Code
+                  </span>
+                }
                 name="EmployeeCode"
-                rules={[{ required: true, message: 'Please input your Employee-Code!' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Employee-Code!",
+                  },
+                ]}
               >
                 <Input className="rounded-lg py-2" placeholder="EMP-001" />
               </Form.Item>
             </div>
 
             <Form.Item
-              label={<span className="font-semibold text-slate-700">Email Address</span>}
+              label={
+                <span className="font-semibold text-slate-700">
+                  Email Address
+                </span>
+              }
               name="Email"
-              rules={[{ required: true, message: 'Please input Employee Email!' }]}
+              rules={[
+                { required: true, message: "Please input Employee Email!" },
+              ]}
             >
-              <Input className="rounded-lg py-2" placeholder="john@company.com" />
+              <Input
+                className="rounded-lg py-2"
+                placeholder="john@company.com"
+              />
             </Form.Item>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
               <Form.Item
-                label={<span className="font-semibold text-slate-700">Department</span>}
+                label={
+                  <span className="font-semibold text-slate-700">
+                    Department
+                  </span>
+                }
                 name="Department"
-                rules={[{ required: true, message: 'Please input Employee Department!' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input Employee Department!",
+                  },
+                ]}
               >
-                <Input className="rounded-lg py-2" placeholder="e.g. Engineering" />
+                <Input
+                  className="rounded-lg py-2"
+                  placeholder="e.g. Engineering"
+                />
               </Form.Item>
 
               <Form.Item
-                label={<span className="font-semibold text-slate-700">Job Role</span>}
+                label={
+                  <span className="font-semibold text-slate-700">Job Role</span>
+                }
                 name="Role"
-                rules={[{ required: true, message: 'Please input Employee Role!' }]}
+                rules={[
+                  { required: true, message: "Please input Employee Role!" },
+                ]}
               >
-                <Input className="rounded-lg py-2" placeholder="e.g. Developer" />
+                <Input
+                  className="rounded-lg py-2"
+                  placeholder="e.g. Developer"
+                />
               </Form.Item>
             </div>
+            <Form.Item
+              name="role"
+              label="User Role"
+              initialValue="employee"
+              rules={[{ required: true, message: "Please select a role!" }]}
+            >
+              <Radio.Group>
+                <Radio value="employee">Employee</Radio>
+                <Radio value="admin">Admin</Radio>
+              </Radio.Group>
+            </Form.Item>
 
             <Form.Item
-              label={<span className="font-semibold text-slate-700">Assets to Allocate</span>}
+              label={
+                <span className="font-semibold text-slate-700">
+                  Assets to Allocate
+                </span>
+              }
               name="Assets"
-              rules={[{ required: true, message: 'Please input Employee Assets!' }]}
+              rules={[
+                { required: true, message: "Please input Employee Assets!" },
+              ]}
               tooltip="Enter assets separated by commas"
             >
-              <Input.TextArea rows={2} className="rounded-lg" placeholder="MacBook Pro, Dell Monitor" />
+              <Input.TextArea
+                rows={2}
+                className="rounded-lg"
+                placeholder="MacBook Pro, Dell Monitor"
+              />
             </Form.Item>
 
             <Form.Item className="pt-4">
-              <Button 
-                type="primary" 
-                htmlType="submit" 
+              <Button
+                type="primary"
+                htmlType="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 h-11 text-lg font-medium rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-0.5 active:scale-95"
               >
                 Register & Assign Assets
@@ -118,7 +190,7 @@ const MyForm = () => {
             </Form.Item>
           </Form>
         </Card>
-        
+
         <p className="mt-8 text-center text-xs text-slate-400 uppercase tracking-widest">
           Secure Asset Management Portal &copy; 2026
         </p>

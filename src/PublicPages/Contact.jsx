@@ -39,11 +39,7 @@ const ContactPage = () => {
     console.log('Failed:', errorInfo);
   };
 
-  // const onFinish = (values) => {
-  //   console.log('Received values:', values);
-  //   message.success('Thank you! Your message has been sent successfully.');
-  //   form.resetFields();
-  // };
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-6 lg:px-20">
