@@ -194,7 +194,7 @@ export default function AssetInventory() {
       title: "Asset Name", dataIndex: "name", key: "name",
       render: (name, record) => (
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs shrink-0">
             <LaptopOutlined />
           </div>
           <div>

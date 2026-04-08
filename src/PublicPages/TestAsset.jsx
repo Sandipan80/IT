@@ -9,12 +9,14 @@ import {
   Select,
   message,
   Badge,
+  Tooltip,
 } from "antd";
 import {
   PlusOutlined,
   FileTextOutlined,
   SearchOutlined,
   ClockCircleOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 import { createPortal } from "react-dom";
 import axios from "axios";
@@ -46,8 +48,9 @@ const TicketQueue = () => {
     try {
       // Admins see all, employees see only theirs
       const url = isAdmin
-        ? "http://localhost:5000/api/TicketRoute/GetAll"
-        : `http://localhost:5000/api/TicketRoute/GetByUser/${userData.id}`;
+        ? "http://localhost:5000/api/TicketRoute/getAllTickets"
+        : `http://localhost:5000/api/TicketRoute/getTicketsByUser/${userData.id}`;
+
       const res = await axios.get(url);
       setTickets(res.data.tickets || []);
     } catch (error) {
@@ -69,7 +72,10 @@ const TicketQueue = () => {
         raisedBy: userData.id,
         employeeName: userData.Name,
       };
-      await axios.post("http://localhost:5000/api/TicketRoute/Create", payload);
+      await axios.post(
+        "http://localhost:5000/api/TicketRoute/CreateTicket",
+        payload,
+      );
       message.success("Ticket raised successfully!");
       setShowForm(false);
       form.resetFields();
@@ -140,8 +146,9 @@ const TicketQueue = () => {
     <div className="p-6 bg-slate-50 min-h-screen animate-in fade-in duration-700">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
+        <div className="flex flex-row justify-between items-center w-full mb-6">
+          {/* LEFT SIDE: Title and Description */}
+          <div className="flex flex-col">
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
               IT Ticket Queue
             </h1>
@@ -149,12 +156,27 @@ const TicketQueue = () => {
               Monitor and resolve IT support requests
             </p>
           </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95"
-          >
-            <PlusOutlined /> Raise Ticket
-          </button>
+
+          {/* RIGHT SIDE: Action Buttons grouped together */}
+          <div className="flex items-center gap-3">
+            {/* REFRESH BUTTON */}
+            <Tooltip title="Refresh from DB">
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={fetchTickets}
+                loading={loading}
+                className="rounded-xl h-10 w-10 flex items-center justify-center border-slate-200 text-slate-500 hover:text-blue-600"
+              />
+            </Tooltip>
+
+            {/* RAISE TICKET BUTTON */}
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95 whitespace-nowrap"
+            >
+              <PlusOutlined /> Raise Ticket
+            </button>
+          </div>
         </div>
 
         {/* Stats Summary */}
@@ -227,7 +249,7 @@ const TicketQueue = () => {
                       className="rounded-lg py-2"
                     />
                   </Form.Item>
-                                    <Form.Item
+                  <Form.Item
                     name="description"
                     label="Detailed Description"
                     rules={[{ required: true }]}
@@ -238,45 +260,44 @@ const TicketQueue = () => {
                       className="rounded-lg"
                     />
                   </Form.Item>
+                
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Form.Item
+                    name="category"
+                    label="Category"
+                    rules={[{ required: true, message: "Select a category" }]}
+                  >
+                    <Select
+                      placeholder="Select Type"
+                      className="w-full"
+                      // THIS IS THE FIX: It forces the dropdown to attach to the Form Item, not the Body
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                    >
+                      <Option value="Hardware">Hardware</Option>
+                      <Option value="Software">Software</Option>
+                      <Option value="Network">Network</Option>
+                    </Select>
+                  </Form.Item>
+
+                  <Form.Item
+                    name="priority"
+                    label="Priority"
+                    rules={[{ required: true, message: "Select priority" }]}
+                  >
+                    <Select
+                      placeholder="Urgency"
+                      className="w-full"
+                      // THIS IS THE FIX: Prevents the dropdown from hiding behind the Drawer
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                    >
+                      <Option value="Low">Low</Option>
+                      <Option value="Medium">Medium</Option>
+                      <Option value="High">High</Option>
+                    </Select>
+                  </Form.Item>
+                </div>
                 </Form>
-
-<div className="grid grid-cols-2 gap-4">
-  <Form.Item 
-    name="category" 
-    label="Category" 
-    rules={[{ required: true, message: 'Select a category' }]}
-  >
-    <Select 
-      placeholder="Select Type" 
-      className="w-full"
-      // THIS IS THE FIX: It forces the dropdown to attach to the Form Item, not the Body
-      getPopupContainer={(trigger) => trigger.parentNode}
-    >
-      <Option value="Hardware">Hardware</Option>
-      <Option value="Software">Software</Option>
-      <Option value="Network">Network</Option>
-    </Select>
-  </Form.Item>
-
-  <Form.Item 
-    name="priority" 
-    label="Priority" 
-    rules={[{ required: true, message: 'Select priority' }]}
-  >
-    <Select 
-      placeholder="Urgency" 
-      className="w-full"
-      // THIS IS THE FIX: Prevents the dropdown from hiding behind the Drawer
-      getPopupContainer={(trigger) => trigger.parentNode}
-    >
-      <Option value="Low">Low</Option>
-      <Option value="Medium">Medium</Option>
-      <Option value="High">High</Option>
-    </Select>
-  </Form.Item>
-</div>
-
-
               </div>
 
               <div className="p-6 border-t bg-slate-50 flex justify-end gap-3">

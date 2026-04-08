@@ -24,7 +24,7 @@ const HeroSection = () => {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",        // fires the instant this hits the top — no offset
-          end: "+=200%",
+          end: "+=150%",
           pin: true,
           pinSpacing: true,
           scrub: 1.5,
