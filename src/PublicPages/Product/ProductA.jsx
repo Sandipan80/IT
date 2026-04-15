@@ -43,7 +43,7 @@ const WebServices = () => {
         {/* 1. HERO SECTION - MATCHING THE MOBILE 'FRONT' STYLE */}
         <section className="bg-slate-950 text-white pt-32 pb-24 px-6 relative flex items-center min-h-[85vh]">
           {/* Background Glow */}
-          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white/5 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-linear-to-t from-white/5 to-transparent" />
           
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10 w-full">
             <div className="flex-1 text-left">
@@ -56,7 +56,7 @@ const WebServices = () => {
               </motion.div>
               
               <motion.div variants={fadeInUp} transition={{ delay: 0.2 }}>
-                <Title level={1} className="!text-white !text-5xl md:!text-8xl !font-black !mb-8 tracking-tighter !leading-[0.9]">
+                <Title level={1} className="text-white! text-5xl! md:text-8xl! font-black! mb-8! tracking-tighter leading-[0.9]!">
                   Scalable Web, <br/><span className="text-blue-500">Built to Endure.</span>
                 </Title>
               </motion.div>
@@ -80,7 +80,7 @@ const WebServices = () => {
                 initial={{ y: 100, opacity: 0 }} 
                 animate={{ y: 0, opacity: 1 }} 
                 transition={{ delay: 0.5, duration: 0.8 }} 
-                className="w-full max-w-[550px] aspect-video bg-slate-900 rounded-3xl border-[8px] border-slate-800 shadow-2xl relative overflow-hidden flex items-center justify-center p-4"
+                className="w-full max-w-137.5 aspect-video bg-slate-900 rounded-3xl border-8 border-slate-800 shadow-2xl relative overflow-hidden flex items-center justify-center p-4"
               >
                  <div className="text-center">
                    <DesktopOutlined className="text-blue-500 text-7xl mb-4" />
@@ -101,7 +101,7 @@ const WebServices = () => {
         {/* 3. CAPABILITIES GRID */}
         <section className="py-24 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Title level={2} className="!font-black !text-5xl tracking-tighter">Core Web Expertise</Title>
+            <Title level={2} className="font-black! text-5xl! tracking-tighter">Core Web Expertise</Title>
           </div>
           <motion.div initial="initial" whileInView="animate" variants={staggerContainer} viewport={{ once: true }}>
             <Row gutter={[32, 32]}>
@@ -113,9 +113,9 @@ const WebServices = () => {
               ].map((item, i) => (
                 <Col xs={24} sm={12} lg={6} key={i}>
                   <motion.div variants={fadeInUp} whileHover={{ y: -12 }}>
-                    <Card className="text-center h-full rounded-[32px] border-slate-100 hover:shadow-2xl transition-all duration-500 group">
+                    <Card className="text-center h-full rounded-4xl border-slate-100 hover:shadow-2xl transition-all duration-500 group">
                       <div className="text-5xl text-slate-800 mb-6 group-hover:text-blue-600 transition-colors">{item.icon}</div>
-                      <Title level={4} className="!font-bold !text-2xl">{item.title}</Title>
+                      <Title level={4} className="font-bold! text-2xl!">{item.title}</Title>
                       <div className="flex flex-wrap justify-center gap-2 mt-4">
                         {item.tags.map(t => <Tag key={t} className="m-0 bg-slate-50 border-slate-200">{t}</Tag>)}
                       </div>
@@ -157,7 +157,7 @@ const WebServices = () => {
           <motion.div initial="initial" whileInView="animate" variants={fadeInUp} viewport={{ once: true }}>
             <div className="max-w-3xl mx-auto">
               <Avatar size={100} src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sandipan" className="mb-6 shadow-xl border-4 border-slate-50" />
-              <Title level={3} className="!font-serif italic leading-relaxed !text-3xl text-slate-800">
+              <Title level={3} className="font-serif! italic leading-relaxed text-3xl! text-slate-800">
                 "Vault reconstructed our entire web architecture in weeks. The MERN stack expertise is visible in the speed and stability of our platform today."
               </Title>
               <Divider className="border-slate-100" />
