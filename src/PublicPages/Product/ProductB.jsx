@@ -66,7 +66,7 @@ const MobileServices = () => {
         {/* 1. HERO SECTION */}
         <section className="bg-blue-600 text-white pt-32 pb-24 px-6 relative flex items-center min-h-[85vh]">
           {/* Background Ambient Glow */}
-          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white/10 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-linear-to-t from-white/10 to-transparent" />
           
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10 w-full">
             <div className="flex-1 text-left">
@@ -79,7 +79,7 @@ const MobileServices = () => {
               </motion.div>
               
               <motion.div variants={fadeInUp} transition={{ delay: 0.2 }}>
-                <Title level={1} className="!text-white !text-5xl md:!text-8xl !font-extrabold !mb-8 tracking-tighter !leading-[0.9]">
+                <Title level={1} className="text-white! text-5xl! md:text-8xl! font-extrabold! mb-8! tracking-tighter leading-[0.9]!">
                   Fluid Motion, <br/>On-Device AI.
                 </Title>
               </motion.div>
@@ -102,7 +102,7 @@ const MobileServices = () => {
                 initial={{ x: 100, opacity: 0, rotate: 10 }} 
                 animate={{ x: 0, opacity: 1, rotate: -5 }} 
                 transition={{ delay: 0.5, ...bouncySpring }} 
-                className="w-[280px] h-[580px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl relative overflow-hidden flex items-center justify-center p-4"
+                className="w-70 h-145 bg-slate-900 rounded-[50px] border-10 border-slate-800 shadow-2xl relative overflow-hidden flex items-center justify-center p-4"
               >
                  <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay: 1.2, ...bouncySpring}} className="text-center">
                    <FireOutlined className="text-blue-500 text-7xl mb-4 animate-bounce" />
@@ -118,7 +118,7 @@ const MobileServices = () => {
         {/* 2. TECH STACK SECTION */}
         <section className="py-24 px-6 max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Title level={2} className="!font-black !text-5xl tracking-tighter">Engineered for Performance</Title>
+            <Title level={2} className="font-black! text-5xl! tracking-tighter">Engineered for Performance</Title>
           </div>
           <motion.div initial="initial" whileInView="animate" variants={staggerContainer} viewport={{ once: true }}>
             <Row gutter={[24, 24]}>
@@ -132,7 +132,7 @@ const MobileServices = () => {
                   <motion.div variants={fadeInUp} whileHover={{ y: -10 }}>
                     <Card className="text-center h-full rounded-3xl border-slate-100 hover:shadow-2xl transition-shadow duration-300">
                       <div className="text-5xl text-blue-600 mb-4">{item.icon}</div>
-                      <Title level={4} className="!font-bold">{item.title}</Title>
+                      <Title level={4} className="font-bold!">{item.title}</Title>
                       <div className="flex flex-wrap justify-center gap-2 mt-4">
                         {item.tags.map(tag => <Tag key={tag} className="m-0 bg-slate-50 border-slate-200">{tag}</Tag>)}
                       </div>
@@ -174,7 +174,7 @@ const MobileServices = () => {
           <motion.div initial="initial" whileInView="animate" variants={fadeInUp} viewport={{ once: true }}>
             <div className="max-w-3xl mx-auto">
               <Avatar size={100} src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" className="mb-6 shadow-xl border-4 border-slate-50" />
-              <Title level={3} className="!font-serif italic leading-relaxed !text-3xl text-slate-800">
+              <Title level={3} className="font-serif! italic leading-relaxed text-3xl! text-slate-800">
                 "The gesture controls and offline-first logic Vault implemented changed our entire delivery ecosystem. It's the most stable app we've ever launched."
               </Title>
               <Divider className="border-slate-100" />
