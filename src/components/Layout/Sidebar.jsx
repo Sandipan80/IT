@@ -66,10 +66,10 @@ const Sidebar = () => {
       {/* Logo & Toggle Section */}
       <div className="flex items-center justify-between px-5 h-20 border-b border-slate-50">
         {!collapsed && (
-          <Link to="/Dashboard" className="flex items-center gap-2 group shrink-0">
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
             <div className="flex items-center gap-2 animate-in fade-in duration-500">
               <img src={logo} alt="Logo" style={{height:'40px' ,width:'auto' }} />
-              <span className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent tracking-tight">
+              <span className="text-lg font-bold bg-linear-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent tracking-tight">
                 Vault            
               </span>
             </div>
