@@ -18,6 +18,7 @@ import ProductA from './PublicPages/Product/ProductA';
 import ProductB from './PublicPages/Product/ProductB';
 import Test from './PublicPages/Test'
 import TestAsset from'./PublicPages/TestAsset'
+import Footer from './components/Layout/Footer';
 
 const AuthListener = () => {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ function App() {
           <Route path="/Product/B" element={<ProductB />} />
           <Route path="/Test" element={<Test />} />
           <Route path="/TestAsset" element={<TestAsset />} />
+          <Route path="/Footer" element={<Footer />} />
         </Route>
 
         {/* PROTECTED ROUTES SECTION */}
@@ -100,6 +102,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
