@@ -1,200 +1,223 @@
-import React from "react";
-import { Button, Form, Input, Card, message, Radio } from "antd";
+
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Card, message, Radio, Select, Space, Tooltip } from "antd";
+import { ReloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import axiosInstance from "../../utils/axiosInstance";
 
-const MyForm = () => {
-  // 1. Initialize the form instance
+const { Option } = Select;
+
+/**
+ * MyForm Component
+ * @param {Object} initialData - Pass employee data to enable Edit Mode
+ * @param {Function} onSuccess - Callback to refresh table and close drawer
+ */
+const MyForm = ({ initialData, onSuccess }) => {
   const [form] = Form.useForm();
+  const [availableAssets, setAvailableAssets] = useState([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const onFinish = async (values) => {
+  // --- Fetch Available Assets Logic ---
+  const fetchAvailableAssets = async () => {
+    setLoadingAssets(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/EmployeeRoute/NewUser",
-        values,
-      );
-      console.log("Success:", response.data);
+      const res = await axios.get("http://localhost:5000/api/Assets/GetAllAssets");
+      const allAssets = res.data?.data || [];
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-      }
+      // LOGIC: Show assets that are "Unassigned" 
+      // PLUS assets already assigned to THIS specific employee (if editing)
+      const filtered = allAssets.filter((asset) => {
+        const isUnassigned = asset.status === "Unassigned";
+        const isAlreadyMine = initialData && asset.assignedTo?._id === initialData._id;
+        return isUnassigned || isAlreadyMine;
+      });
 
-      // 2. Success Feedback
-      message.success("Employee Registered Successfully!");
-
-      // 3. Reset the form fields to their initial values
-      form.resetFields();
-    } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-      message.error(
-        "Registration Failed: " +
-          (error.response?.data?.message || "Server Error"),
-      );
+      setAvailableAssets(filtered);
+    } catch (err) {
+      console.error("Failed to fetch assets:", err);
+      message.error("Could not load available assets");
+    } finally {
+      setLoadingAssets(false);
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+  // --- Populate Form on Edit ---
+  useEffect(() => {
+    fetchAvailableAssets();
+    
+    if (initialData) {
+      // Pre-fill form with existing user data
+      form.setFieldsValue({
+        ...initialData,
+        // Convert populated asset objects back to ID strings for the Select component
+        Assets: initialData.Assets?.map(a => typeof a === 'object' ? a._id : a)
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [initialData, form]);
+
+  // --- Form Submission Logic (Create vs Update) ---
+  const onFinish = async (values) => {
+    setSubmitting(true);
+    try {
+      let response;
+      
+      if (initialData) {
+        // UPDATE MODE: Use PUT request
+        response = await axios.put(
+          `http://localhost:5000/api/EmployeeRoute/UpdateUser/${initialData._id}`,
+          values
+        );
+        message.success("Employee updated successfully!");
+      } else {
+        // CREATE MODE: Use POST request
+        response = await axios.post(
+          "http://localhost:5000/api/EmployeeRoute/NewUser",
+          values
+        );
+        message.success("Employee registered successfully!");
+      }
+
+      console.log("Success:", response.data);
+      
+      // If a callback was provided (e.g., from Users.jsx), trigger it
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Clear form and refresh asset list if in "Add" mode
+      if (!initialData) {
+        form.resetFields();
+      }
+      fetchAvailableAssets();
+      
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      message.error(
+        "Operation Failed: " +
+          (error.response?.data?.message || "Server Error")
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-          Asset Management System
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Register a new employee and allocate resources
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl animate-in fade-in zoom-in-95 duration-1000 delay-200">
-        <Card className="shadow-xl border-slate-200 rounded-2xl overflow-hidden">
-          <Form
-            form={form} // 4. Attach the form instance here
-            name="basic"
-            layout="vertical"
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-            className="space-y-2"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-              <Form.Item
-                label={
-                  <span className="font-semibold text-slate-700">
-                    Full Name
-                  </span>
-                }
-                name="Name"
-                rules={[
-                  { required: true, message: "Please input Employee Name!" },
-                ]}
-              >
-                <Input
-                  className="rounded-lg py-2 hover:border-blue-400 focus:border-blue-500 transition-all"
-                  placeholder="John Doe"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={
-                  <span className="font-semibold text-slate-700">
-                    Employee Code
-                  </span>
-                }
-                name="EmployeeCode"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Employee-Code!",
-                  },
-                ]}
-              >
-                <Input className="rounded-lg py-2" placeholder="EMP-001" />
-              </Form.Item>
-            </div>
+    <div className="flex flex-col justify-center">
+      <Card className="shadow-sm border-slate-200 rounded-2xl overflow-hidden">
+        <Form
+          form={form}
+          name="register_employee"
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+          className="space-y-2"
+        >
+          {/* Name and Code Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+            <Form.Item
+              label={<span className="font-semibold text-slate-700">Full Name</span>}
+              name="Name"
+              rules={[{ required: true, message: "Name is required" }]}
+            >
+              <Input className="rounded-lg py-2" placeholder="John Doe" />
+            </Form.Item>
 
             <Form.Item
-              label={
-                <span className="font-semibold text-slate-700">
-                  Email Address
-                </span>
-              }
-              name="Email"
-              rules={[
-                { required: true, message: "Please input Employee Email!" },
-              ]}
+              label={<span className="font-semibold text-slate-700">Employee Code</span>}
+              name="EmployeeCode"
+              rules={[{ required: true, message: "Code is required" }]}
             >
-              <Input
-                className="rounded-lg py-2"
-                placeholder="john@company.com"
+              <Input 
+                className="rounded-lg py-2" 
+                placeholder="EMP-001" 
+                disabled={!!initialData} // Lock code during edits
               />
             </Form.Item>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-              <Form.Item
-                label={
-                  <span className="font-semibold text-slate-700">
-                    Department
-                  </span>
-                }
-                name="Department"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input Employee Department!",
-                  },
-                ]}
-              >
-                <Input
-                  className="rounded-lg py-2"
-                  placeholder="e.g. Engineering"
-                />
-              </Form.Item>
+          <Form.Item
+            label={<span className="font-semibold text-slate-700">Email Address</span>}
+            name="Email"
+            rules={[
+              { required: true, message: "Email is required" },
+              { type: "email", message: "Please enter a valid email" },
+            ]}
+          >
+            <Input className="rounded-lg py-2" placeholder="john@company.com" />
+          </Form.Item>
 
-              <Form.Item
-                label={
-                  <span className="font-semibold text-slate-700">Job Role</span>
-                }
-                name="Role"
-                rules={[
-                  { required: true, message: "Please input Employee Role!" },
-                ]}
-              >
-                <Input
-                  className="rounded-lg py-2"
-                  placeholder="e.g. Developer"
-                />
-              </Form.Item>
-            </div>
-            <Form.Item
-              name="role"
-              label="User Role"
-              initialValue="employee"
-              rules={[{ required: true, message: "Please select a role!" }]}
-            >
-              <Radio.Group>
-                <Radio value="employee">Employee</Radio>
-                <Radio value="admin">Admin</Radio>
-              </Radio.Group>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+            <Form.Item label={<span className="font-semibold text-slate-700">Department</span>} name="Department">
+              <Input className="rounded-lg py-2" placeholder="e.g. Engineering" />
             </Form.Item>
 
-            <Form.Item
-              label={
+            <Form.Item label={<span className="font-semibold text-slate-700">Job Role</span>} name="Role">
+              <Input className="rounded-lg py-2" placeholder="e.g. Developer" />
+            </Form.Item>
+          </div>
+
+          <Form.Item name="role" label={<span className="font-semibold text-slate-700">System Role</span>} initialValue="employee">
+            <Radio.Group className="bg-slate-100 p-1 rounded-lg">
+              <Radio.Button value="employee" className="rounded-md border-none">Employee</Radio.Button>
+              <Radio.Button value="admin" className="rounded-md border-none">Admin</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <div className="flex justify-between w-full items-center">
                 <span className="font-semibold text-slate-700">
                   Assets to Allocate
+                  <Tooltip title="Showing unassigned assets and currently held assets">
+                    <InfoCircleOutlined className="ml-2 text-slate-400" />
+                  </Tooltip>
                 </span>
-              }
-              name="Assets"
-              rules={[
-                { required: true, message: "Please input Employee Assets!" },
-              ]}
-              tooltip="Enter assets separated by commas"
+                <Button 
+                  type="link" 
+                  size="small" 
+                  icon={<ReloadOutlined spin={loadingAssets} />} 
+                  onClick={fetchAvailableAssets}
+                >
+                  Refresh
+                </Button>
+              </div>
+            }
+            name="Assets"
+          >
+            <Select
+              mode="multiple"
+              allowClear
+              loading={loadingAssets}
+              placeholder="Search and select assets"
+              className="w-full custom-select"
+              optionFilterProp="children"
+              style={{ borderRadius: '8px' }}
             >
-              <Input.TextArea
-                rows={2}
-                className="rounded-lg"
-                placeholder="MacBook Pro, Dell Monitor"
-              />
-            </Form.Item>
+              {availableAssets.map((asset) => (
+                <Option key={asset._id} value={asset._id}>
+                  <Space>
+                    <span className="font-medium text-blue-600">[{asset.assetId}]</span>
+                    <span>{asset.name}</span>
+                  </Space>
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-            <Form.Item className="pt-4">
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 h-11 text-lg font-medium rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-0.5 active:scale-95"
-              >
-                Register & Assign Assets
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-
-        <p className="mt-8 text-center text-xs text-slate-400 uppercase tracking-widest">
-          Secure Asset Management Portal &copy; 2026
-        </p>
-      </div>
+          <Form.Item className="pt-4">
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
+              className="w-full bg-blue-600 hover:bg-blue-700 h-11 text-lg font-medium rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-0.5"
+            >
+              {submitting ? "Processing..." : (initialData ? "Update Employee" : "Register & Assign Assets")}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 };
