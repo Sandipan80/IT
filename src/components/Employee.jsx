@@ -1,178 +1,223 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
-import MyForm from "./User";
-import { createPortal } from 'react-dom';
+import { Table, Button, Input, Tag, Space, Popconfirm, message, Tooltip, Drawer } from "antd";
+import { 
+  SearchOutlined, UserAddOutlined, EditOutlined, 
+  DeleteOutlined, UserOutlined, TeamOutlined 
+} from "@ant-design/icons";
+import axios from "axios";
+import { createPortal } from "react-dom";
+import MyForm from "./User"; // Ensure this matches your filename for the form
 
 const Users = () => {
-  const [data, setData] = useState();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
-  // Sync animation state with showForm for smooth mounting/unmounting
+  // Sync animation state for smooth Drawer transitions
   useEffect(() => {
     if (showForm) {
-      setTimeout(() => setIsAnimating(true), 10);
+      const timer = setTimeout(() => setIsAnimating(true), 10);
+      return () => clearTimeout(timer);
     } else {
       setIsAnimating(false);
     }
   }, [showForm]);
 
+  /**
+   * FETCH EMPLOYEES
+   * Calls the .populate('Assets') backend route to get full asset details
+   */
+  const fetchEmployees = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get("http://localhost:5000/api/EmployeeRoute/GetUser");
+      setData(res?.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      message.error("Failed to load employee directory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/EmployeeRoute/GetUser");
-        setData(res?.data);
-      } catch (error) {
-        console.error("Error fetching employee list:", error?.response);
-      }
-    };
     fetchEmployees();
   }, []);
 
+  // --- DELETE LOGIC ---
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/EmployeeRoute/DeleteUser/${id}`);
+      message.success("Employee removed and assets unassigned");
+      fetchEmployees();
+    } catch (err) {
+      message.error("Delete operation failed");
+    }
+  };
+
+  // --- EDIT LOGIC ---
+  const handleEdit = (employee) => {
+    setEditingUser(employee);
+    setShowForm(true);
+  };
+
   const filteredEmployees = data?.employeeList?.filter((emp) =>
     emp.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    emp.Department?.toLowerCase().includes(searchTerm.toLowerCase())
+    emp.Department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    emp.EmployeeCode?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
+  // --- TABLE COLUMN DEFINITIONS ---
+  const columns = [
+    {
+      title: "EMPLOYEE INFO",
+      key: "info",
+      render: (_, record) => (
+        <div className="flex flex-col">
+          <span className="font-bold text-slate-800">{record.Name}</span>
+          <span className="text-xs text-slate-400">{record.Email}</span>
+        </div>
+      ),
+    },
+    {
+      title: "INTERNAL CODE",
+      dataIndex: "EmployeeCode",
+      key: "EmployeeCode",
+      render: (code) => (
+        <Tag className="bg-slate-50 border-slate-200 text-slate-600 font-medium">
+          {code}
+        </Tag>
+      ),
+    },
+    {
+      title: "POSITION",
+      key: "position",
+      render: (_, record) => (
+        <div>
+          <div className="text-sm font-semibold text-slate-700">{record.Department || "N/A"}</div>
+          <div className="text-xs text-slate-400 italic">{record.Role}</div>
+        </div>
+      ),
+    },
+    {
+      title: "ASSETS ASSIGNED",
+      dataIndex: "Assets",
+      key: "Assets",
+      render: (assets) => (
+        <div className="flex flex-wrap gap-1">
+          {Array.isArray(assets) && assets.length > 0 ? (
+            assets.map((asset, i) => (
+              <Tag key={i} color="blue" className="text-[10px] uppercase font-bold px-1 py-0 border-blue-200">
+                {typeof asset === 'object' ? asset.name : 'Asset'}
+              </Tag>
+            ))
+          ) : (
+            <span className="text-xs text-slate-300 italic">None</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "ACTIONS",
+      key: "actions",
+      align: "right",
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Edit Employee">
+            <Button 
+              type="text" 
+              icon={<EditOutlined className="text-blue-500" />} 
+              onClick={() => handleEdit(record)} 
+            />
+          </Tooltip>
+          <Popconfirm
+            title="Delete Employee?"
+            description="All assigned assets will be marked as unassigned."
+            onConfirm={() => handleDelete(record._id)}
+            okText="Delete"
+            okType="danger"
+          >
+            <Tooltip title="Delete">
+              <Button type="text" icon={<DeleteOutlined className="text-red-500" />} />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
   return (
-    <div className="p-6 bg-slate-50 min-h-screen font-sans">
+    <div className="p-8 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header & Search Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Employee Asset Directory</h1>
-            <p className="text-slate-500 text-sm">{data?.message || 'Manage your organizational resources'}</p>
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200">
+              <TeamOutlined className="text-white text-2xl" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Employee Directory</h1>
+              <p className="text-slate-400 text-sm font-medium">{data?.message || 'Fetching real-time data...'}</p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="relative w-full md:w-72">
-              <input
-                type="text"
-                placeholder="Search name or department..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <span className="absolute left-3 top-2.5 text-slate-400">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </span>
-            </div>
-            
-            <button 
-              onClick={() => setShowForm(true)} 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-blue-200 transform transition active:scale-95"
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <Input
+              prefix={<SearchOutlined className="text-slate-400" />}
+              placeholder="Search name, code..."
+              className="rounded-xl border-slate-200 h-11 w-full md:w-64"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Button 
+              type="primary" 
+              size="large" 
+              icon={<UserAddOutlined />}
+              onClick={() => { setEditingUser(null); setShowForm(true); }}
+              className="bg-blue-600 hover:bg-blue-700 border-none rounded-xl h-11 shadow-lg shadow-blue-100 font-bold"
             >
               Add Employee
-            </button>
+            </Button>
           </div>
         </div>
 
-        {/* Employee Table */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Employee Info</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Internal Code</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Position</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Assets Assigned</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((items, index) => (
-                  <tr key={index} className="hover:bg-blue-50/30 transition-colors group">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-900 group-hover:text-blue-600">{items?.Name}</span>
-                        <span className="text-xs text-slate-500">{items?.Email}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2.5 py-0.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
-                        {items?.EmployeeCode}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-slate-800 font-medium">{items?.Department}</div>
-                      <div className="text-xs text-slate-400 italic">{items?.Role}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1.5">
-                        {items?.Assets?.split(',').map((asset, i) => (
-                          <span key={i} className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md uppercase font-bold border border-blue-100">
-                            {asset.trim()}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="px-6 py-12 text-center text-slate-400 italic">No matches found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* --- MAIN DATA TABLE --- */}
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <Table
+            columns={columns}
+            dataSource={filteredEmployees}
+            rowKey="_id"
+            loading={loading}
+            pagination={{ pageSize: 8 }}
+            className="custom-table"
+            // Styles the table header to match your Gen-Z aesthetic
+            rowClassName="hover:bg-blue-50/50 transition-colors"
+          />
         </div>
 
-        {/* Side Drawer Portal */}
+        {/* --- PORTAL DRAWER --- */}
         {showForm && createPortal(
-          <div className="fixed inset-0 z-[9999] flex justify-end overflow-hidden">
-            {/* Backdrop Fade */}
+          <div className="fixed inset-0 z-50 flex justify-end">
             <div 
-              className={`absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] transition-opacity duration-500 ease-in-out ${isAnimating ? 'opacity-100' : 'opacity-0'}`}
-              onClick={() => setShowForm(false)}
+              className={`absolute inset-0 bg-slate-900/30 backdrop-blur-[2px] transition-opacity duration-500 ${isAnimating ? 'opacity-100' : 'opacity-0'}`} 
+              onClick={() => setShowForm(false)} 
             />
-
-            {/* Side Panel Slide */}
-            <div
-              className={`relative w-full max-w-[540px] h-full bg-white shadow-2xl flex flex-col transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isAnimating ? 'translate-x-0' : 'translate-x-full'}`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Drawer Header */}
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-white sticky top-0 z-10">
+            <div className={`relative w-full max-w-lg bg-white h-full shadow-2xl transition-transform duration-500 ease-out ${isAnimating ? 'translate-x-0' : 'translate-x-full'}`}>
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-600 text-white rounded-lg shadow-lg shadow-blue-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-800">Add New Employee</h2>
+                  <div className="p-2 bg-blue-600 text-white rounded-lg"><UserOutlined /></div>
+                  <h2 className="text-xl font-bold text-slate-800">{editingUser ? 'Update Employee' : 'New Registration'}</h2>
                 </div>
-                <button onClick={() => setShowForm(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <button onClick={() => setShowForm(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">✕</button>
               </div>
-
-              {/* Drawer Body */}
-              <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
-                <div className="mb-8 p-5 bg-slate-50 border border-slate-100 rounded-2xl">
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    Enter the details below to register a new employee and allocate assets from the inventory.
-                  </p>
-                </div>
-                <MyForm />
-              </div>
-
-              {/* Drawer Footer */}
-              <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-4">
-                <button 
-                  onClick={() => setShowForm(false)} 
-                  className="px-6 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  form="employee-form"
-                  className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95"
-                >
-                  Save Employee
-                </button>
+              <div className="p-8 overflow-y-auto h-[calc(100%-80px)]">
+                <MyForm 
+                  initialData={editingUser} 
+                  onSuccess={() => { setShowForm(false); fetchEmployees(); }} 
+                />
               </div>
             </div>
           </div>,
