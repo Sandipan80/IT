@@ -29,28 +29,34 @@ const Sidebar = () => {
       allowedRoles: ['admin', 'employee'] 
     }, 
     { 
-      key: '3', 
+      key: '2', 
       icon: <UserOutlined className="text-lg" />, 
       label: <Link to="/Employee" className="font-medium">Employee Directory</Link>,
       allowedRoles: ['admin'] 
     },
     { 
-      key: '4', 
+      key: '3', 
       icon: <AppstoreOutlined className="text-lg" />, 
       label: <Link to="/AssetInventory" className="font-medium">Asset Inventory</Link>,
       allowedRoles: ['admin'] 
     },
     { 
-      key: '5', 
+      key: '4', 
       icon: <SnippetsOutlined className="text-lg" />, 
       label: <Link to="/TicketQueue" className="font-medium">Ticket Queue</Link>,
       allowedRoles: ['admin', 'employee'] 
     },
     { 
-      key: '6', 
+      key: '5', 
       icon: <TagOutlined className="text-lg" />, 
-      label: <Link to="/MyAsset" className="font-medium">My Asset</Link>,
-      allowedRoles: ['admin', 'employee'] // Usually Admins want to see this too
+      label: <Link to="/AvailableAssets" className="font-medium">Available Asset</Link>,
+      allowedRoles: ['admin', 'employee'] 
+    },
+    { 
+      key: '6', 
+      icon: <AppstoreOutlined className="text-lg" />, 
+      label: <Link to="/AssetRequestPanel" className="font-medium">Asset Requests</Link>,
+      allowedRoles: ['admin'] 
     },
   ];
 
