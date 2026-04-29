@@ -18,6 +18,8 @@ import ProductA from './PublicPages/Product/ProductA';
 import ProductB from './PublicPages/Product/ProductB';
 import Test from './PublicPages/Test'
 import TestAsset from'./PublicPages/TestAsset'
+import AssetRequestPanel from './components/Pages/AssetRequestPanel';
+import AvailableAssets from './components/Pages/AvailableAssets';
 import Footer from './components/Layout/Footer';
 
 const AuthListener = () => {
@@ -85,6 +87,7 @@ function App() {
                     <Route path="/TicketQueue" element={<TicketQueue />} />
                     <Route path="/MyAsset" element={<MyAsset />} />
                     <Route path="/Profile/:id" element={<Profile />} />
+                    <Route path="/AvailableAssets" element={<AvailableAssets />} />
                   </Route>
 
                   {/* 2. ACCESSIBLE BY ADMIN ONLY */}
@@ -92,6 +95,7 @@ function App() {
                     <Route path="/Employee" element={<Users />} />
                     <Route path="/AssetInventory" element={<AssetInventory />} />
                     <Route path="/users" element={<UserDirectory />} />
+                    <Route path="/AssetRequestPanel" element={<AssetRequestPanel />} />
                   </Route>
 
                   {/* Fallback */}
