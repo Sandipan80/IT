@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Tag, message, Card, Space, Popconfirm } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, PullRequestOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance';
 
 const AssetRequestPanel = () => {
     const [requests, setRequests] = useState([]);
@@ -12,7 +13,7 @@ const AssetRequestPanel = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get("http://localhost:5000/api/Assets/getAllAssetRequests", {
+            const res = await axiosInstance.get("/Assets/getAllAssetRequests", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setRequests(res.data.data);
@@ -35,9 +36,9 @@ const handleAction = async (requestId, actionStatus) => {
     console.log("Attempting Action:", actionStatus, "for ID:", requestId);
 
     try {
-        // We use the exact base URL you used in fetchRequests (http://localhost:5000/api/Assets/)
-        const res = await axios.patch(
-            `http://localhost:5000/api/Assets/updateAssetRequest/${requestId}`,
+        
+        const res = await axiosInstance.patch(
+            `/Assets/updateAssetRequest/${requestId}`,
             { status: actionStatus }, // This sends 'approved' or 'rejected'
             { 
                 headers: { 

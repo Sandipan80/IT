@@ -5,8 +5,9 @@ import {
   DeleteOutlined, UserOutlined, TeamOutlined 
 } from "@ant-design/icons";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import { createPortal } from "react-dom";
-import MyForm from "./User"; // Ensure this matches your filename for the form
+import MyForm from "./User"; 
 
 const Users = () => {
   const [data, setData] = useState(null);
@@ -33,7 +34,7 @@ const Users = () => {
   const fetchEmployees = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/EmployeeRoute/GetUser");
+      const res = await axiosInstance.get("/EmployeeRoute/GetUser");
       setData(res?.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -50,7 +51,7 @@ const Users = () => {
   // --- DELETE LOGIC ---
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/EmployeeRoute/DeleteUser/${id}`);
+      await axiosInstance.delete(`/EmployeeRoute/DeleteUser/${id}`);
       message.success("Employee removed and assets unassigned");
       fetchEmployees();
     } catch (err) {

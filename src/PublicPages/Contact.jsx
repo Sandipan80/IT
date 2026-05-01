@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -17,7 +18,7 @@ const ContactPage = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/ContactRoute/ContactUs", values);
+      const response = await axiosInstance.post("/ContactRoute/ContactUs", values);
       console.log('Success:', response.data); 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);

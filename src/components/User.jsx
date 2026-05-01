@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Card, message, Radio, Select, Space, Tooltip } from "antd";
 import { ReloadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-
+import axiosInstance from "../../utils/axiosInstance";
 const { Option } = Select;
 
 /**
@@ -21,7 +21,7 @@ const MyForm = ({ initialData, onSuccess }) => {
   const fetchAvailableAssets = async () => {
     setLoadingAssets(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/Assets/GetAllAssets");
+      const res = await axiosInstance.get("/Assets/GetAllAssets");
       const allAssets = res.data?.data || [];
 
       // LOGIC: Show assets that are "Unassigned" 
@@ -65,15 +65,15 @@ const MyForm = ({ initialData, onSuccess }) => {
       
       if (initialData) {
         // UPDATE MODE: Use PUT request
-        response = await axios.put(
-          `http://localhost:5000/api/EmployeeRoute/UpdateUser/${initialData._id}`,
+        response = await axiosInstance.put(
+          `/EmployeeRoute/UpdateUser/${initialData._id}`,
           values
         );
         message.success("Employee updated successfully!");
       } else {
         // CREATE MODE: Use POST request
-        response = await axios.post(
-          "http://localhost:5000/api/EmployeeRoute/NewUser",
+        response = await axiosInstance.post(
+          "/EmployeeRoute/NewUser",
           values
         );
         message.success("Employee registered successfully!");

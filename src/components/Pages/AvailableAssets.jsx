@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Tag, message, Card } from 'antd';
 import { SendOutlined, LaptopOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance';   
 
 const AvailableAssets = () => {
     const [assets, setAssets] = useState([]);
@@ -11,7 +12,7 @@ const AvailableAssets = () => {
     const fetchAvailableAssets = async () => {
         setLoading(true);
         try {
-            const res = await axios.get("http://localhost:5000/api/Assets/GetUnassignedAssets");
+            const res = await axiosInstance.get("/Assets/GetUnassignedAssets");
             setAssets(res.data.assets);
         } catch (error) {
             message.error("Failed to load available assets");
@@ -28,8 +29,8 @@ const AvailableAssets = () => {
     const handleRequest = async (assetId) => {
         const token = localStorage.getItem("token");
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/Assets/createAssetRequest",
+            const res = await axiosInstance.post(
+                "/Assets/createAssetRequest",
                 { assetId, reason: "Requested by employee via dashboard" },
                 {
                     headers: { Authorization: `Bearer ${token}` }

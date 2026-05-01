@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance'; 
 
 const Profile = () => {
   // 1. This grabs the 'id' from the URL bar (/Profile/65e123...)
@@ -11,7 +12,7 @@ const Profile = () => {
     // 2. Now we send that ID to your Backend API
     const getDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/EmployeeRoute/Employee_profile/${id}`);
+        const response = await axiosInstance.get(`/EmployeeRoute/Employee_profile/${id}`);
         setEmployee(response.data); // This is your DB data!
       } catch (err) {
         console.error("Fetch error:", err);

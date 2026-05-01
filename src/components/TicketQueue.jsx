@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 const { Option } = Select;
 
 const TicketQueue = () => {
@@ -48,10 +49,10 @@ const TicketQueue = () => {
     try {
       // Admins see all, employees see only theirs
       const url = isAdmin
-        ? "http://localhost:5000/api/TicketRoute/getAllTickets"
-        : `http://localhost:5000/api/TicketRoute/getTicketsByUser/${userData.id}`;
+        ? "/TicketRoute/getAllTickets"
+        : `/TicketRoute/getTicketsByUser/${userData.id}`;
 
-      const res = await axios.get(url);
+      const res = await axiosInstance.get(url);
       setTickets(res.data.tickets || []);
     } catch (error) {
       message.error("Failed to load tickets");
@@ -72,10 +73,7 @@ const TicketQueue = () => {
         raisedBy: userData.id,
         employeeName: userData.Name,
       };
-      await axios.post(
-        "http://localhost:5000/api/TicketRoute/CreateTicket",
-        payload,
-      );
+      await axiosInstance.post("/TicketRoute/CreateTicket", payload);
       message.success("Ticket raised successfully!");
       setShowForm(false);
       form.resetFields();
@@ -260,43 +258,42 @@ const TicketQueue = () => {
                       className="rounded-lg"
                     />
                   </Form.Item>
-                
 
-                <div className="grid grid-cols-2 gap-4">
-                  <Form.Item
-                    name="category"
-                    label="Category"
-                    rules={[{ required: true, message: "Select a category" }]}
-                  >
-                    <Select
-                      placeholder="Select Type"
-                      className="w-full"
-                      // THIS IS THE FIX: It forces the dropdown to attach to the Form Item, not the Body
-                      getPopupContainer={(trigger) => trigger.parentNode}
+                  <div className="grid grid-cols-2 gap-4">
+                    <Form.Item
+                      name="category"
+                      label="Category"
+                      rules={[{ required: true, message: "Select a category" }]}
                     >
-                      <Option value="Hardware">Hardware</Option>
-                      <Option value="Software">Software</Option>
-                      <Option value="Network">Network</Option>
-                    </Select>
-                  </Form.Item>
+                      <Select
+                        placeholder="Select Type"
+                        className="w-full"
+                        // THIS IS THE FIX: It forces the dropdown to attach to the Form Item, not the Body
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        <Option value="Hardware">Hardware</Option>
+                        <Option value="Software">Software</Option>
+                        <Option value="Network">Network</Option>
+                      </Select>
+                    </Form.Item>
 
-                  <Form.Item
-                    name="priority"
-                    label="Priority"
-                    rules={[{ required: true, message: "Select priority" }]}
-                  >
-                    <Select
-                      placeholder="Urgency"
-                      className="w-full"
-                      // THIS IS THE FIX: Prevents the dropdown from hiding behind the Drawer
-                      getPopupContainer={(trigger) => trigger.parentNode}
+                    <Form.Item
+                      name="priority"
+                      label="Priority"
+                      rules={[{ required: true, message: "Select priority" }]}
                     >
-                      <Option value="Low">Low</Option>
-                      <Option value="Medium">Medium</Option>
-                      <Option value="High">High</Option>
-                    </Select>
-                  </Form.Item>
-                </div>
+                      <Select
+                        placeholder="Urgency"
+                        className="w-full"
+                        // THIS IS THE FIX: Prevents the dropdown from hiding behind the Drawer
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        <Option value="Low">Low</Option>
+                        <Option value="Medium">Medium</Option>
+                        <Option value="High">High</Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
                 </Form>
               </div>
 
