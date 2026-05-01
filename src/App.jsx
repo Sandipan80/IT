@@ -20,6 +20,7 @@ import Test from './PublicPages/Test'
 import TestAsset from'./PublicPages/TestAsset'
 import AssetRequestPanel from './components/Pages/AssetRequestPanel';
 import AvailableAssets from './components/Pages/AvailableAssets';
+import NotificationSystem from './components/Layout/NotificationSystem';
 import Footer from './components/Layout/Footer';
 
 const AuthListener = () => {
@@ -79,6 +80,7 @@ function App() {
           element={
             <div className="flex h-screen w-full bg-gray-50">
               <Sidebar />
+              <NotificationSystem/>
               <main className="flex-1 overflow-y-auto p-8">
                 <Routes>
                   {/* 1. ACCESSIBLE BY BOTH ADMIN & EMPLOYEE */}
