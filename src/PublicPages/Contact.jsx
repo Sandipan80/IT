@@ -8,6 +8,7 @@ import {
   SendOutlined 
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
+import Cookies from 'js-cookie'
 import axios from 'axios';
 import axiosInstance from '../../utils/axiosInstance';
 
@@ -21,8 +22,9 @@ const ContactPage = () => {
       const response = await axiosInstance.post("/ContactRoute/ContactUs", values);
       console.log('Success:', response.data); 
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-      }
+      // Setting same 4-hour expiry (4/24 days) for consistency
+      Cookies.set('token', response.data.token, { expires: 4 / 24, secure: true, sameSite: 'strict' });
+    }
       // 2. Success Feedback
 
       message.success('Thank you! Your message has been sent successfully!');

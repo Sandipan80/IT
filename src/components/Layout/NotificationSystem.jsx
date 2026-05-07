@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { Lightbulb, X, Bell } from 'lucide-react';
+import Cookies from 'js-cookie'
 
 const socket = io("http://localhost:5000"); // Your Backend URL
 
@@ -10,7 +11,7 @@ const NotificationSystem = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
+    const userData = Cookies.get("user");
     if (!userData) return;
 
     const user = JSON.parse(userData);

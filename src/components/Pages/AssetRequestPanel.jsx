@@ -3,6 +3,7 @@ import { Table, Button, Tag, message, Card, Space, Popconfirm } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, PullRequestOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import axiosInstance from '../../../utils/axiosInstance';
+import Cookies from 'js-cookie'
 
 const AssetRequestPanel = () => {
     const [requests, setRequests] = useState([]);
@@ -12,7 +13,7 @@ const AssetRequestPanel = () => {
     const fetchRequests = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("token");
+            const token = Cookies.get("token");
             const res = await axiosInstance.get("/Assets/getAllAssetRequests", {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -30,7 +31,7 @@ const AssetRequestPanel = () => {
 
     // 2. Handle Action (Approve/Reject)
 const handleAction = async (requestId, actionStatus) => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     
     // Log for debugging - Check your browser console (F12)
     console.log("Attempting Action:", actionStatus, "for ID:", requestId);

@@ -22,14 +22,15 @@ import AssetRequestPanel from './components/Pages/AssetRequestPanel';
 import AvailableAssets from './components/Pages/AvailableAssets';
 import NotificationSystem from './components/Layout/NotificationSystem';
 import Footer from './components/Layout/Footer';
+import Cookies from 'js-cookie';
 
 const AuthListener = () => {
   const navigate = useNavigate();
-  const [internalToken, setInternalToken] = useState(localStorage.getItem("token"));
+  const [internalToken, setInternalToken] = useState(Cookies.get("token"));
 
   useEffect(() => {
     const syncToken = () => {
-      const currentToken = localStorage.getItem("token");
+      const currentToken = Cookies.get("token");
       const path = window.location.pathname;
 
       // Define all your public paths here

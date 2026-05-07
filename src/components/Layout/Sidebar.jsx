@@ -11,13 +11,14 @@ import {
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Logo.png';
+import Cookies from 'js-cookie';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
   // 1. FIXED: Retrieve the full user object and extract role from it
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userData = JSON.parse(Cookies.get("user") || "{}");
   const userRole = userData.role || ""; // Extracting 'role' from the parsed object
 
   // Define all possible menu items with an 'allowedRoles' property

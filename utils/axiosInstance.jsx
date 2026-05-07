@@ -1,8 +1,9 @@
 import axios from "axios";
+import Cookies from 'js-cookie'
 
 const axiosInstance = axios.create({
     baseURL: "http://localhost:5000/api", // Ensure this matches your server.js port
-    timeout: 10000, // Increased timeout for slower database queries
+    timeout: 10000, 
     withCredentials: true,
 });
 
@@ -10,7 +11,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         // MATCHING YOUR APP.JSX: Using "token" instead of "jwtToken"
-        const token = localStorage.getItem("token"); 
+        const token = Cookies.get("token"); 
         
         if (token) {
             // Standard format for Bearer tokens
@@ -32,8 +33,8 @@ axiosInstance.interceptors.response.use(
         // If the backend returns 401 (Unauthorized), the token might be expired
         if (error.response && error.response.status === 401) {
             console.warn("Unauthorized! Redirecting to login...");
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            Cookies.remove("token");
+            Cookies.remove("user");
             window.location.href = "/Login";
         }
         

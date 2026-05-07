@@ -1,11 +1,12 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import Cookies from 'js-cookie'
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
   
   // Parse user data to get the role
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userData = JSON.parse(Cookies.get("user") || "{}");
   const userRole = userData.role;
 
   // 1. Check if user is logged in
@@ -37,19 +38,3 @@ export default ProtectedRoute;
 
 
 
-// import React from 'react';
-// import { Navigate } from 'react-router-dom';
-
-// const ProtectedRoute = ({ children }) => {
-//   const token = localStorage.getItem("token");
-
-
-//   if (!token) {
-//     return <Navigate to="/Login" replace />;
-//   }
-
-  
-//   return children;
-// };
-
-// export default ProtectedRoute;

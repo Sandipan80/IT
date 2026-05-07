@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Tag, message, Card } from 'antd';
 import { SendOutlined, LaptopOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import axiosInstance from '../../../utils/axiosInstance';   
+import axiosInstance from '../../../utils/axiosInstance'; 
+import Cookies from 'js-cookie'  
 
 const AvailableAssets = () => {
     const [assets, setAssets] = useState([]);
@@ -27,7 +28,7 @@ const AvailableAssets = () => {
 
     // 2. Handle the Request Action
     const handleRequest = async (assetId) => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         try {
             const res = await axiosInstance.post(
                 "/Assets/createAssetRequest",

@@ -21,6 +21,7 @@ import {
 import { createPortal } from "react-dom";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosInstance";
+import Cookies from 'js-cookie'
 const { Option } = Select;
 
 const TicketQueue = () => {
@@ -31,7 +32,7 @@ const TicketQueue = () => {
   const [form] = Form.useForm();
 
   // Get user info for RBAC and auto-filling
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userData = JSON.parse(Cookies.get("user") || "{}");
   const isAdmin = userData.role === "admin";
 
   // Handle Animation State
