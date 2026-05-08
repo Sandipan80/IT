@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from 'js-cookie'
 
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api", // Ensure this matches your server.js port
+    baseURL: "https://it-backend-6bvo.onrender.com/api", // Ensure this matches your server.js port
     timeout: 10000, 
     withCredentials: true,
 });
