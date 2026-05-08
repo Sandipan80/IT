@@ -90,9 +90,9 @@ const Navbar = () => {
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100 visible' : '-translate-y-4 opacity-0 invisible'}
         `}>
           <div className="flex flex-col space-y-2">
-            <Link to="/products" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">Products</Link>
-            <Link to="/customers" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">Customers</Link>
-            <Link to="/careers" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">Careers</Link>
+            <Link to="/Product/A" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">Products</Link>
+            <Link to="/About" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">About</Link>
+            <Link to="/ContactUs" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 p-4 rounded-2xl hover:bg-blue-50 transition-colors font-medium">Contact Us</Link>
           </div>
         </div>
       </div>
