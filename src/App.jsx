@@ -11,7 +11,7 @@ import ProtectedRoute from './components/Routes/ProtectedRoute';
 import Profile from './components/Pages/Profile';
 import Navbar from './components/Layout/Navbar';
 import Dashboard from './components/Pages/Dashboard';
-import Home from './publicPages/Home';
+import Home from './PublicPages/Home';
 import About from './PublicPages/About';
 import Contact from './PublicPages/Contact';
 import ProductA from './PublicPages/Product/ProductA';
