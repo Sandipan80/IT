@@ -19,8 +19,8 @@ const { Option } = Select;
  * BASE: Points to the Asset routes
  * EMP_BASE: Points to the Employee routes for the assignment dropdown
  */
-const BASE = "http://localhost:5000/api/Assets";
-const EMP_BASE = "http://localhost:5000/api/EmployeeRoute";
+const BASE = "https://it-backend-6bvo.onrender.com/api/Assets";
+const EMP_BASE = "https://it-backend-6bvo.onrender.com/api/EmployeeRoute";
 
 const api = {
   getAll: () =>
@@ -52,7 +52,7 @@ const api = {
     }).then(r => r.json()),
 
   health: () =>
-    fetch("http://localhost:5000/getStatus", {
+    fetch("https://it-backend-6bvo.onrender.com/getStatus", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({}),

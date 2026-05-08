@@ -54,7 +54,7 @@ const Profile = () => {
             type="text"
             icon={<LogoutOutlined />}
             className="flex items-center justify-center font-medium transition-colors duration-300 
-                       bg-red-50 text-red-600 hover:!bg-red-600 hover:!text-white border border-red-200"
+                       bg-red-50 text-red-600 hover:bg-red-600! hover:text-white! border border-red-200"
             style={{ height: '40px', borderRadius: '8px' }}
           >
             Logout

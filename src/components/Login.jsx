@@ -11,8 +11,8 @@ const LoginPage = () => {
   const onFinish = async (values) => {
     try {
 
-      const response = await axios.post(
-        "http://localhost:5000/api/LoginRoute/Login",
+      const response = await axiosInstance.post(
+        "/LoginRoute/Login",
         values,
       );
 

@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { Lightbulb, X, Bell } from 'lucide-react';
 import Cookies from 'js-cookie'
 
-const socket = io("http://localhost:5000"); // Your Backend URL
+const socket = io("https://it-backend-6bvo.onrender.com"); // Your Backend URL
 
 const NotificationSystem = () => {
   const [notifications, setNotifications] = useState([]);
