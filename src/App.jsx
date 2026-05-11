@@ -79,7 +79,7 @@ function App() {
         <Route
           path="/*"
           element={
-            <div className="flex h-screen w-full bg-gray-50">
+            <div className="flex flex-col md:flex-row h-screen w-full bg-gray-50 overflow-hidden">
               <Sidebar />
               <NotificationSystem/>
               <main className="flex-1 overflow-y-auto p-8">
