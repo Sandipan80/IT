@@ -142,7 +142,7 @@ const TicketQueue = () => {
   ];
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen animate-in fade-in duration-700">
+    <div className="p-6 bg-slate-50 min-h-screen animate-in fade-in duration-700 w-full overflow-x-auto">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-row justify-between items-center w-full mb-6">
@@ -196,13 +196,13 @@ const TicketQueue = () => {
         </div>
 
         {/* Table Section */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden w-full overflow-x-auto">
           <Table
             columns={columns}
             dataSource={tickets}
             loading={loading}
             rowKey="_id"
-            className="custom-table"
+            className="custom-table min-w-full"
             pagination={{ pageSize: 8 }}
           />
         </div>
