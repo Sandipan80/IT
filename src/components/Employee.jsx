@@ -186,14 +186,14 @@ const Users = () => {
         </div>
 
         {/* --- MAIN DATA TABLE --- */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden w-full overflow-x-auto">
           <Table
             columns={columns}
             dataSource={filteredEmployees}
             rowKey="_id"
             loading={loading}
             pagination={{ pageSize: 8 }}
-            className="custom-table"
+            className="custom-table min-w-full"
             // Styles the table header to match your Gen-Z aesthetic
             rowClassName="hover:bg-blue-50/50 transition-colors"
           />
