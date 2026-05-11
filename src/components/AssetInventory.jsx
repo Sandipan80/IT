@@ -300,7 +300,7 @@ export default function AssetInventory() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 font-sans">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 font-sans w-full overflow-x-auto">
       {contextHolder}
 
       {/* --- HEADER --- */}
@@ -406,8 +406,8 @@ export default function AssetInventory() {
         </div>
 
         {/* --- MAIN ASSETS TABLE --- */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <Table
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full overflow-x-auto">
+          <Table classNames="min-w-full"
             columns={columns} dataSource={filtered} rowKey="_id" loading={loading}
             pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `${t} assets`, className: "px-4 pb-2" }}
             locale={{
