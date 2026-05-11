@@ -55,6 +55,13 @@ const LoginPage = () => {
             <p className="text-indigo-100 leading-relaxed">
               Securely manage office inventory and track IT assets across all
               departments.
+              To access dashboard, use this registered email and employee code.
+              Admin credentials:<br />
+              Email: sandipan@gmail.com <br />
+              Employee Code: Emp017 <br />
+              Employee credentials: <br />
+              Email: john@gmail.com <br />
+              Employee Code: Emp001 <br />
             </p>
           </div>
 
