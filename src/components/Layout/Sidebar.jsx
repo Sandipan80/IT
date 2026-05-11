@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, Dropdown } from 'antd';
+import { Menu, Dropdown, Divider } from 'antd';
 import {
   DashboardOutlined,
   UserOutlined,
@@ -17,14 +17,16 @@ import Cookies from 'js-cookie';
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // Hook to listen to URL changes for the "Active Tab" label
 
-  // 1. FIXED: Retrieve the full user object and extract role from it
+  // --- 1. USER DATA & AUTH LOGIC ---
+  // We retrieve the user object from cookies to handle role-based access and profile info
   const userData = JSON.parse(Cookies.get("user") || "{}");
   const userRole = userData.role || ""; 
 
-  // Define menu items with 'key' matching the path for 'active tab' detection
-  const allItems = [
+  // --- 2. MENU CONFIGURATION ---
+  // Centralized list of all links. 'key' matches the URL path for easy active-state detection.
+  const navigationItems = [
     { 
       key: '/Dashboard', 
       icon: <DashboardOutlined className="text-lg" />, 
@@ -69,95 +71,123 @@ const Sidebar = () => {
     },
   ];
 
-  // 2. Filter items based on user role
-  const filteredItems = allItems.filter(item => 
+  // Filter out links that the current user is not allowed to see based on their role
+  const filteredNav = navigationItems.filter(item => 
     item.allowedRoles.includes(userRole)
   );
 
-  // Logic to show which tab is open in the mobile header
-  const activeTab = allItems.find(item => item.key === location.pathname)?.title || "Vault";
+  // --- 3. MOBILE SPECIFIC ITEMS ---
+  // We add a special Profile section at the top of the mobile dropdown menu
+  const mobileMenuItems = [
+    {
+      key: 'profile',
+      label: (
+        <div className="flex items-center gap-3 py-2" onClick={() => navigate(`/Profile/${userData.id}`)}>
+           <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
+              {userData.Name ? userData.Name.charAt(0).toUpperCase() : <UserOutlined />}
+           </div>
+           <div>
+              <p className="text-xs font-bold leading-none">{userData.Name || "User"}</p>
+              <p className="text-[10px] text-blue-600 uppercase font-bold mt-1">{userRole}</p>
+           </div>
+        </div>
+      )
+    },
+    { type: 'divider' }, // Visual separator between Profile and Nav links
+    ...filteredNav
+  ];
+
+  // Detect which page the user is currently on to display the title in the top-bar
+  const activeTab = navigationItems.find(item => item.key === location.pathname)?.title || "Vault";
 
   return (
     <>
-      {/* MOBILE NAVBAR: Visible only on small screens (md:hidden) */}
+      {/* --- COMPONENT A: MOBILE NAVBAR (md:hidden) ---
+          Visible on mobile/tablets. Switches from side to top to save horizontal space.
+      */}
       <div className="flex md:hidden items-center justify-between px-4 h-16 bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50 w-full shrink-0">
+        {/* Mobile Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="Logo" className="h-8 w-auto" />
           <span className="text-md font-bold text-slate-900">Vault</span>
         </Link>
 
-        {/* This fills the gap between logo and menu icon with the current page name */}
-        <div className="text-blue-600 font-bold text-[11px] bg-blue-50 px-3 py-1 rounded-full uppercase tracking-tighter">
+        {/* Dynamic Center Label (Tells user where they are) */}
+        <div className="text-blue-600 font-bold text-[10px] bg-blue-50 px-3 py-1 rounded-full uppercase tracking-tighter">
           {activeTab}
         </div>
 
-        <Dropdown 
-          menu={{ items: filteredItems }} 
-          trigger={['click']}
-          placement="bottomRight"
-        >
-          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-600 shadow-inner">
-            <MenuOutlined className="text-lg" />
-          </button>
-        </Dropdown>
+        {/* Mobile Profile Avatar & Hamburger Menu */}
+        <div className="flex items-center gap-2">
+          <div 
+            onClick={() => navigate(`/Profile/${userData.id}`)}
+            className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm cursor-pointer"
+          >
+            {userData.Name ? userData.Name.charAt(0).toUpperCase() : <UserOutlined />}
+          </div>
+
+          <Dropdown 
+            menu={{ items: mobileMenuItems }} 
+            trigger={['click']}
+            placement="bottomRight"
+          >
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-50 text-slate-600">
+              <MenuOutlined />
+            </button>
+          </Dropdown>
+        </div>
       </div>
 
-      {/* DESKTOP SIDEBAR: Hidden on mobile (hidden md:flex) */}
+      {/* --- COMPONENT B: DESKTOP SIDEBAR (hidden md:flex) ---
+          Visible on screens 768px and wider. Features the collapsible transition.
+      */}
       <div className={`hidden md:flex flex-col h-screen transition-all duration-500 bg-white border-r border-slate-100 shadow-sm ${collapsed ? 'w-20' : 'w-72'}`}>
         
-        {/* Logo & Toggle Section */}
+        {/* Header: Logo and the Collapse Toggle Button */}
         <div className="flex items-center justify-between px-5 h-20 border-b border-slate-50">
           {!collapsed && (
             <Link to="/" className="flex items-center gap-2 group shrink-0">
-              <div className="flex items-center gap-2 animate-in fade-in duration-500">
+              <div className="flex items-center gap-2">
                 <img src={logo} alt="Logo" style={{height:'40px' ,width:'auto' }} />
-                <span className="text-lg font-bold bg-linear-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent tracking-tight">
+                <span className="text-lg font-bold bg-linear-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
                   Vault            
                 </span>
               </div>
             </Link>
           )}
-          <button 
-            onClick={() => setCollapsed(!collapsed)}
-            className={`flex items-center justify-center w-8 h-8 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-blue-600 transition-colors ${collapsed ? 'mx-auto' : ''}`}
-          >
+          <button onClick={() => setCollapsed(!collapsed)} className="text-slate-400 hover:text-blue-600">
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </button>
         </div>
 
-        {/* Navigation Menu */}
-        <div className="flex-1 py-6 px-3 custom-sidebar-menu overflow-y-auto">
+        {/* Main Navigation: Scrollable area for menu links */}
+        <div className="flex-1 py-6 px-3 overflow-y-auto">
           <Menu
             mode="inline"
             inlineCollapsed={collapsed}
             selectedKeys={[location.pathname]} 
-            items={filteredItems} 
+            items={filteredNav} 
             className="border-none bg-transparent"
           />
         </div>
 
-        {/* Footer / Profile Section */}
+        {/* Footer: Full Desktop Profile Card (Hides/Shrinks on Collapse) */}
         <div 
           className="p-4 border-t border-slate-50 mt-auto cursor-pointer hover:bg-slate-50/50 transition-all"
           onClick={() => navigate(`/Profile/${userData.id}`)}
         >
           {!collapsed ? (
-            <div className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 animate-in slide-in-from-bottom-2 shadow-sm">
-              <div className="w-10 h-10 rounded-full bg-blue-600 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-                <span className="text-white font-bold">
-                  {userData.Name ? userData.Name.charAt(0).toUpperCase() : <UserOutlined />}
-                </span>
+            <div className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-blue-600 shadow-sm flex items-center justify-center text-white font-bold shrink-0">
+                {userData.Name ? userData.Name.charAt(0).toUpperCase() : <UserOutlined />}
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-bold text-slate-900 truncate">
-                  {userData.Name || "User"}
-                </p>
-                <p className="text-[10px] text-blue-600 uppercase tracking-widest font-extrabold">
-                  {userRole || "Access Denied"}
-                </p>
+                <p className="text-sm font-bold text-slate-900 truncate">{userData.Name || "User"}</p>
+                <p className="text-[10px] text-blue-600 uppercase tracking-widest font-extrabold">{userRole}</p>
               </div>
             </div>
           ) : (
+            // Shrunk view of profile for collapsed state
             <div className="mx-auto w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             </div>
