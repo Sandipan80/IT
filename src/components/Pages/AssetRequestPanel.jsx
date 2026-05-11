@@ -137,7 +137,7 @@ const handleAction = async (requestId, actionStatus) => {
     ];
 
     return (
-        <div className="p-6 bg-slate-50 min-h-screen animate-in fade-in duration-500">
+        <div className="p-6 bg-slate-50 min-h-screen animate-in fade-in duration-500 w-full overflow-x-auto">
             <div className="max-w-7xl mx-auto space-y-6">
                 <div className="flex flex-col">
                     <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -149,7 +149,7 @@ const handleAction = async (requestId, actionStatus) => {
                     </p>
                 </div>
 
-                <Card className="shadow-sm border-slate-200 rounded-2xl overflow-hidden">
+                <Card className="shadow-sm border-slate-200 rounded-2xl overflow-hidden w-full overflow-x-auto">
                     <Table 
                         columns={columns} 
                         dataSource={requests} 
