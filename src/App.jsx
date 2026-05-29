@@ -23,7 +23,9 @@ import AvailableAssets from './components/Pages/AvailableAssets';
 import NotificationSystem from './components/Layout/NotificationSystem';
 import Footer from './components/Layout/Footer';
 import Cookies from 'js-cookie';
-
+import EmployeeWork from './components/Pages/EmployeeWork';
+import WorkAllocation from './components/Pages/WorkAllocation';
+  
 const AuthListener = () => {
   const navigate = useNavigate();
   const [internalToken, setInternalToken] = useState(Cookies.get("token"));
@@ -88,9 +90,9 @@ function App() {
                   <Route element={<ProtectedRoute allowedRoles={['admin', 'employee']} />}>
                     <Route path="/Dashboard" element={<Dashboard />} />
                     <Route path="/TicketQueue" element={<TicketQueue />} />
-                    <Route path="/MyAsset" element={<MyAsset />} />
                     <Route path="/Profile/:id" element={<Profile />} />
                     <Route path="/AvailableAssets" element={<AvailableAssets />} />
+                    <Route path="/EmployeeWork" element={<EmployeeWork />} />
                   </Route>
 
                   {/* 2. ACCESSIBLE BY ADMIN ONLY */}
@@ -99,6 +101,7 @@ function App() {
                     <Route path="/AssetInventory" element={<AssetInventory />} />
                     <Route path="/users" element={<UserDirectory />} />
                     <Route path="/AssetRequestPanel" element={<AssetRequestPanel />} />
+                    <Route path="/WorkAllocation" element={<WorkAllocation />} />
                   </Route>
 
                   {/* Fallback */}
