@@ -9,6 +9,9 @@ import {
   TagOutlined,
   SnippetsOutlined,
   MenuOutlined,
+  CarryOutOutlined,
+  RocketOutlined,
+  ScheduleOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/Logo.png";
@@ -81,6 +84,28 @@ const Sidebar = () => {
       ),
       allowedRoles: ["admin", "employee"],
       title: "Available",
+    },
+    {
+      key: "AssignWork",
+      icon: <RocketOutlined className="text-lg" />,
+      label: (
+        <Link to="/WorkAllocation" className="font-medium">
+          Assign Work
+        </Link>
+      ),
+      allowedRoles: ["admin"],
+      title: "Assign Work",
+    },
+    {
+      key: "/EmployeeWork",
+      icon: <ScheduleOutlined className="text-lg" />,
+      label: (
+        <Link to="/EmployeeWork" className="font-medium">
+          My Workspace 
+        </Link>
+      ),
+      allowedRoles: ["admin", "employee"],
+      title: "My Workspace",
     },
     {
       key: "/AssetRequestPanel",
